@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            justify-items: center;
+            padding: 20px;
+        }
+
+        .product-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .product-image {
+            width: 200px;
+            border-radius: 5px;
+        }
+
+        .product-details {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="products-list" class="products-container"></div>
+
+    <script>
+        const xhttpr = new XMLHttpRequest();
+        xhttpr.open('GET', 'https://dummyjson.com/products', true);
+
+        xhttpr.send();
+
+        xhttpr.onload = () => {
+            if (xhttpr.status === 200) {
+                const productsList = JSON.parse(xhttpr.response);
+                const productsListElement = document.getElementById('products-list');
+
+                // Rendering product data
+                const productData = productsList;
+                productData.products.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.classList.add('product-container');
+
+                    const imageElement = document.createElement('img');
+                    imageElement.src = product.thumbnail;
+                    imageElement.alt = product.title;
+                    imageElement.classList.add('product-image');
+                    productElement.appendChild(imageElement);
+
+                    const detailsElement = document.createElement('div');
+                    detailsElement.classList.add('product-details');
+                    detailsElement.innerHTML = `
+                        <h2>${product.title}</h2>
+                        <p>${product.description}</p>
+                        <p>Price: $${product.price}</p>
+                        <p>Rating: ${product.rating}</p>
+                        <p>Stock: ${product.stock}</p>
+                    `;
+                    productElement.appendChild(detailsElement);
+
+                    productsListElement.appendChild(productElement);
+                });
+            } else {
+                console.error('Request failed');
+            }
+        };
+    </script>
+</body>
+
+</html>
